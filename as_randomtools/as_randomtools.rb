@@ -109,7 +109,7 @@ module AS_Extensions
 
                 vertices.each_with_index { |v,i| 
 
-                    t = Geom::Transformation.new [ rand * max_x , rand * max_y , rand * max_z ]
+                    t = Geom::Transformation.new [ ( rand - 0.5 ) * max_x , ( rand - 0.5 ) * max_y , ( rand - 0.5 ) * max_z ]
                     ent.transform_entities( t , v )
                     
                     # Life is always better with some feedback while SketchUp works
@@ -450,10 +450,9 @@ module AS_Extensions
         sel = mod.selection
         toolname = "Randomly Swap Objects"
         
-        # Get all objects from selection
+        # Get all components from selection
         all_objects = []
         all_objects.push( *sel.grep( Sketchup::ComponentInstance ) )
-        all_objects.push( *sel.grep( Sketchup::Group ) )
         
         if !all_objects.empty?       
             
@@ -461,22 +460,24 @@ module AS_Extensions
             
             begin
             
-                # Get object locations
-                loc = []
+                # Get component definitions
+                definitions = []
                 all_objects.each { |o| 
                 
-                    loc << o.transformation.origin
+                    definitions << o.definition
                     
                 }
 
                 # Now randomize that array
-                loc.shuffle!
+                definitions.shuffle!
                 
-                # And then place objects at the new locations
+                # And then replace randomly
                 all_objects.each_with_index { |o,i| 
                 
-                    t = Geom::Transformation.new( loc[i] - o.transformation.origin )
-                    o.transform! ( t )
+                    o.definition = definitions[i]
+                    
+                    # Life is always better with some feedback while SketchUp works
+                    Sketchup.status_text = toolname + " | Done with object #{(i+1).to_s}"                    
                     
                 }
                 
@@ -490,7 +491,7 @@ module AS_Extensions
             
         else  # Can't start tool
         
-            UI.messagebox "Select at least one group or component instance (i.e. objects in your model)."
+            UI.messagebox "Select at least one component instance (i.e. objects in your model)."
         
         end
 
@@ -604,7 +605,7 @@ module AS_Extensions
         tools << [ "Place Components Randomly on Edges" , "random_place_edges" , "Select one component instance (a copy) and at least one ungrouped edge." ]
         tools << [ "" , "" , "" ]
         tools << [ "Randomize Objects (Scale, Rotation, Position)" , "randomize_objects" , "Select at least one group or component instance (i.e. objects in your model)." ]
-        tools << [ "Randomly Swap Objects" , "randomize_swap" , "Select at least one group or component instance (i.e. objects in your model)." ]
+        tools << [ "Randomly Swap Objects" , "randomize_swap" , "Select at least one component instance (i.e. objects in your model)." ]
         tools << [ "" , "" , "" ]
         tools << [ "Randomize Texture Positions" , "random_texture_placement" , "Select at least one face or group that has an image texture applied directly to its face(s). Note: This tool will make all copies of groups unique." ]
 
