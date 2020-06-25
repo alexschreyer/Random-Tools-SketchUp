@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   inkscape:version="1.0 (4035a4fb49, 2020-05-01)"
+   sodipodi:docname="randomize_swap.svg"
+   version="1.1"
+   viewBox="0 0 1000 1000"
+   data-name="Layer 1"
+   id="Layer_1">
+  <metadata
+     id="metadata981">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <sodipodi:namedview
+     inkscape:current-layer="Layer_1"
+     inkscape:window-maximized="1"
+     inkscape:window-y="-8"
+     inkscape:window-x="-8"
+     inkscape:cy="500"
+     inkscape:cx="500"
+     inkscape:zoom="0.846"
+     showgrid="false"
+     id="namedview979"
+     inkscape:window-height="1012"
+     inkscape:window-width="1920"
+     inkscape:pageshadow="2"
+     inkscape:pageopacity="0"
+     guidetolerance="10"
+     gridtolerance="10"
+     objecttolerance="10"
+     borderopacity="1"
+     bordercolor="#666666"
+     pagecolor="#ffffff" />
+  <defs
+     id="defs970">
+    <style
+       id="style968">.cls-1{fill:#00aeef;stroke:#231f20;stroke-miterlimit:10;stroke-width:40px}.cls-3{fill:#231f20}</style>
+  </defs>
+  <path
+     id="path974"
+     stroke-width="40"
+     stroke-miterlimit="10"
+     stroke="#231f20"
+     fill="none"
+     d="M252.74 356.7c37.61-286.06 450.42-248.8 493.61.06" />
+  <path
+     id="path976"
+     d="M452.41 270.61l-21.54-33.75-166.14 106.29-93.88-173.48-35.19 19.08 114.38 211.26 202.37-129.4zM540.58 282.29l19.59-34.91 171.9 96.69 83.89-178.52 36.21 17.06-102.21 217.4-209.38-117.72z"
+     class="cls-3" />
+  <rect
+     y="550"
+     x="150"
+     height="300"
+     width="300"
+     id="rect1553"
+     style="opacity:0.999;fill:#00aeef;stroke:#000000;stroke-width:40" />
+  <path
+     id="path1555"
+     d="M 600,850 750,550 900,850 Z"
+     style="fill:#00aeef;stroke:#000000;stroke-width:40;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;fill-opacity:1;stroke-miterlimit:4;stroke-dasharray:none" />
+</svg>

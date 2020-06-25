@@ -380,9 +380,10 @@ module AS_Extensions
         sel = mod.selection
         toolname = "Randomize Objects (Scale, Rotation, Position)"
         
-        # Get all components from selection
+        # Get all objects from selection
         all_objects = []
         all_objects.push( *sel.grep( Sketchup::ComponentInstance ) )
+        all_objects.push( *sel.grep( Sketchup::Group ) )
         
         if !all_objects.empty?
         
@@ -401,10 +402,17 @@ module AS_Extensions
             
                 # Iterate through all selected objects
                 all_objects.each_with_index { |e,i|
+                
+                    # Get center
+                    if e.is_a? Sketchup::ComponentInstance
+                        cen = e.transformation.origin
+                    else
+                        cen = e.bounds.center
+                    end
 
                     # Transform this object
-                    t_rot = Geom::Transformation.rotation e.transformation.origin , e.transformation.zaxis , ( rand * max_rot ).degrees
-                    t_sca = Geom::Transformation.scaling e.transformation.origin , ( 1 - scale_var / 2 + rand * scale_var )
+                    t_rot = Geom::Transformation.rotation cen , e.transformation.zaxis , ( rand * max_rot ).degrees
+                    t_sca = Geom::Transformation.scaling cen , ( 1 - scale_var / 2 + rand * scale_var )
                     t_pos = Geom::Transformation.translation Geom::Vector3d.linear_combination( rand * pos_var , e.transformation.xaxis , rand * pos_var , e.transformation.yaxis )
 
                     # Combine transformations and apply
@@ -430,6 +438,63 @@ module AS_Extensions
         end
 
     end  # randomize_objects     
+    
+    
+    # ==================
+    
+    
+    def self.randomize_swap
+    # Randomly swap objects
+        
+        mod = Sketchup.active_model
+        sel = mod.selection
+        toolname = "Randomly Swap Objects"
+        
+        # Get all objects from selection
+        all_objects = []
+        all_objects.push( *sel.grep( Sketchup::ComponentInstance ) )
+        all_objects.push( *sel.grep( Sketchup::Group ) )
+        
+        if !all_objects.empty?       
+            
+            mod.start_operation toolname
+            
+            begin
+            
+                # Get object locations
+                loc = []
+                all_objects.each { |o| 
+                
+                    loc << o.transformation.origin
+                    
+                }
+
+                # Now randomize that array
+                loc.shuffle!
+                
+                # And then place objects at the new locations
+                all_objects.each_with_index { |o,i| 
+                
+                    t = Geom::Transformation.new( loc[i] - o.transformation.origin )
+                    o.transform! ( t )
+                    
+                }
+                
+            rescue Exception => e    
+            
+                UI.messagebox("Couldn't do it! Error: #{e}")
+                
+            end
+            
+            mod.commit_operation
+            
+        else  # Can't start tool
+        
+            UI.messagebox "Select at least one group or component instance (i.e. objects in your model)."
+        
+        end
+
+    end  # randomize_swap       
     
     
     # ==================
@@ -521,7 +586,7 @@ module AS_Extensions
     def self.show_help
     # Show the website as an About dialog
     
-      show_url( "#{@exttitle} - Help" , 'https://alexschreyer.net/projects/?tag=sketchup+plugins-extensions' )
+      show_url( "#{@exttitle} - Help" , 'https://alexschreyer.net/projects/random-tools-extension-for-sketchup/' )
 
     end # show_help
 
@@ -530,30 +595,64 @@ module AS_Extensions
 
 
     if !file_loaded?(__FILE__)
+    
+        tools = []
+        tools << [ "Random Face Push/Pull" , "random_extrusion" , "Select at least one ungrouped face." ]
+        tools << [ "Random Vertex Positions" , "random_vertices" , "Select at least one ungrouped edge (e.g. a face border or line)." ]
+        tools << [ "" , "" , "" ]
+        tools << [ "Place Components Randomly on Faces" , "random_place_faces" , "Select one component instance (a copy) and at least one ungrouped face." ]
+        tools << [ "Place Components Randomly on Edges" , "random_place_edges" , "Select one component instance (a copy) and at least one ungrouped edge." ]
+        tools << [ "" , "" , "" ]
+        tools << [ "Randomize Objects (Scale, Rotation, Position)" , "randomize_objects" , "Select at least one group or component instance (i.e. objects in your model)." ]
+        tools << [ "Randomly Swap Objects" , "randomize_swap" , "Select at least one group or component instance (i.e. objects in your model)." ]
+        tools << [ "" , "" , "" ]
+        tools << [ "Randomize Texture Positions" , "random_texture_placement" , "Select at least one face or group that has an image texture applied directly to its face(s). Note: This tool will make all copies of groups unique." ]
 
-      # Add to the SketchUp help menu
-      menu = UI.menu( "Tools" ).add_submenu( @exttitle )
-      
-      menu.add_item( "Random Face Push/Pull" ) { self.random_extrusion }
-      menu.add_item( "Random Vertex Positions" ) { self.random_vertices }
-      
-      menu.add_separator
-      
-      menu.add_item( "Place Components Randomly on Faces" ) { self.random_place_faces }
-      menu.add_item( "Place Components Randomly on Edges" ) { self.random_place_edges }      
-      
-      menu.add_separator
-      
-      menu.add_item( "Randomize Objects (Scale, Rotation, Position)" ) { self.randomize_objects }
-      menu.add_item( "Randomize Texture Positions" ) { self.random_texture_placement }
-      
-      menu.add_separator
-      
-      # And a link to get help
-      menu.add_item( "Help" ) { self.show_help }
+        # Add to the SketchUp tools menu and create a toolbar
+        menu = UI.menu( "Tools" ).add_submenu( @exttitle )
+        toolbar = UI::Toolbar.new @exttitle 
+        
+        # Get icon file extension
+        sm = lg = ""    
+        RUBY_PLATFORM =~ /darwin/ ? ext = "pdf" : ext = "svg"
+        if Sketchup.version.to_i < 16  
+            ext = "png"
+            sm = "_sm"
+            lg = "_lg"
+        end     
+        
+        # Add them all to menu and toolbar
+        tools.each { |t|
+        
+            if ( t[0] != "" )
 
-      # Let Ruby know we have loaded this file
-      file_loaded(__FILE__)
+                cmd = UI::Command.new( t[0] ) { self.send( t[1] ) }
+                cmd.small_icon = File.join( @extdir , @extname , "icons" , t[1] + "#{sm}.#{ext}")
+                cmd.large_icon = File.join( @extdir , @extname , "icons" , t[1] + "#{lg}.#{ext}")
+                cmd.tooltip = t[0]
+                cmd.status_bar_text = t[2]
+                menu.add_item cmd
+                toolbar.add_item cmd    
+                
+            else
+            
+                menu.add_separator
+                toolbar.add_separator
+            
+            end
+
+        }        
+
+        # And a link to get help only to the menu
+        menu.add_separator
+        menu.add_item( "Help" ) { self.show_help }
+        
+        
+        # Don't forget to show the toolbar
+        toolbar.show
+
+        # Let Ruby know we have loaded this file
+        file_loaded(__FILE__)
 
     end # if
 

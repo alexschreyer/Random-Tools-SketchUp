@@ -11,7 +11,7 @@ License:        GPL (http://www.gnu.org/licenses/gpl.html)
 
 Author :        Alexander Schreyer, www.alexschreyer.net, mail@alexschreyer.net
 
-Website:        https://alexschreyer.net/projects/?tag=sketchup+plugins-extensions
+Website:        https://alexschreyer.net/projects/random-tools-extension-for-sketchup/
 
 Name :          Random Tools
 
@@ -29,9 +29,11 @@ Usage :         Tools > Random Tools
 
 History:        1.0 (6/19/2020):
                 - Initial release
-
-ToDo:           - Toolbar (next version)
-                - Help website (next version)
+                1.1 (TBA):
+                - Added correct help webpage URL
+                - Added toolbar
+                - Randomizing objects now works on groups as well (uses bounding box center)
+                - New function: Randomly swap objects
 
 =end
 
