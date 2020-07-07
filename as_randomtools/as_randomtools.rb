@@ -33,8 +33,12 @@ module AS_Extensions
             prompts = [ "MIN Extrusion (distance) " , "MAX Extrusion (distance) " , "Create New Faces " ]
             defaults = [ "0" , "1'" , "Yes" ]
             lists = [ "" , "" , "Yes|No" ]
+            defaults = Sketchup.read_default( @exttitle , toolname , defaults )
+            
             res = UI.inputbox( prompts , defaults , lists , toolname )
             return if !res
+            
+            Sketchup.write_default( @exttitle , toolname , res )
             
             mod.start_operation toolname
             
@@ -90,8 +94,12 @@ module AS_Extensions
             # Get all the parameters from input dialog
             prompts = [ "MAX Variation RED (x distance) " , "MAX Variation GREEN (y distance) " , "MAX Variation BLUE (z distance) " ]
             defaults = [ "1'" , "1'" , "1'" ]
+            defaults = Sketchup.read_default( @exttitle , toolname , defaults )
+            
             res = UI.inputbox( prompts , defaults , toolname )
             return if !res
+            
+            Sketchup.write_default( @exttitle , toolname , res )
             
             mod.start_operation toolname
             
@@ -105,6 +113,7 @@ module AS_Extensions
                 # Get all the unique vertices
                 vertices = []
                 all_edges.each { |e| vertices << e.vertices }
+                vertices.flatten!
                 vertices.uniq!
 
                 vertices.each_with_index { |v,i| 
@@ -155,13 +164,19 @@ module AS_Extensions
         
             # Get all the parameters from input dialog
             lay = []
-            mod.layers.each { |l| lay << l.display_name }
+            mod.layers.each { |l| 
+                lay << ( Sketchup.version.to_i < 20 ? l.name : l.display_name )
+            }
             
             prompts = [ "MAX Number of Copies per Face " , "MAX Rotation Variation (degrees) " , "Scale Variation Factor (0 = none) " , "Orientation " , "Place Copies on Tag/Layer " ]
             defaults = [ "10" , "360" , "0.5", "Normal" , lay[0] ]
             lists = [ "" , "" , "" , "Up|Normal" , lay.join("|") ]
+            defaults = Sketchup.read_default( @exttitle , toolname , defaults )
+            
             res = UI.inputbox( prompts , defaults , lists , toolname )
             return if !res
+            
+            Sketchup.write_default( @exttitle , toolname , res )
             
             mod.start_operation toolname
             
@@ -270,13 +285,19 @@ module AS_Extensions
         
             # Get all the parameters from input dialog
             lay = []
-            mod.layers.each { |l| lay << l.display_name }
+            mod.layers.each { |l| 
+                lay << ( Sketchup.version.to_i < 20 ? l.name : l.display_name )
+            }
             
             prompts = [ "MAX Number of Copies per Edge " , "MAX Rotation Variation (degrees) " , "Scale Variation Factor (0 = none) " , "Orientation " , "Place Copies on Tag/Layer " ]
             defaults = [ "2" , "360" , "0.5", "Normal" , lay[0] ]
             lists = [ "" , "" , "" , "Up|Normal" , lay.join("|") ]
+            defaults = Sketchup.read_default( @exttitle , toolname , defaults )
+            
             res = UI.inputbox( prompts , defaults , lists , toolname )
             return if !res
+            
+            Sketchup.write_default( @exttitle , toolname , res )
             
             mod.start_operation toolname
             
@@ -389,8 +410,12 @@ module AS_Extensions
         
             prompts = [ "MAX Rotation Variation (degrees) " , "MAX Position Variation (distance) " , "Scale Variation Factor (0 = none) " ]
             defaults = [ "360" , "0" , "0.5" ]
+            defaults = Sketchup.read_default( @exttitle , toolname , defaults )
+            
             res = UI.inputbox( prompts , defaults , toolname )
-            return if !res        
+            return if !res
+            
+            Sketchup.write_default( @exttitle , toolname , res )      
             
             mod.start_operation toolname
             

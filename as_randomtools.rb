@@ -36,6 +36,10 @@ History:        1.0 (6/19/2020):
                 - Randomizing objects now works on groups as well (uses bounding box center)
                 - Vertices now randomize correctly about their position
                 - New function: Randomly swap objects (components only)
+                1.2 (TBD)
+                - Now saves dialog values
+                - Fixed issue with vertices double-counting
+                - Fixed issue with pre-2020 layer names
 
 =end
 
