@@ -15,9 +15,9 @@ Website:        https://alexschreyer.net/projects/random-tools-extension-for-ske
 
 Name :          Random Tools
 
-Version:        1.1
+Version:        1.2
 
-Date :          6/25/2020
+Date :          7/7/2020
 
 Description :   A set of tools to randomize various things in a SketchUp Model: Object placement,
                 rotation, scale, face extrusion, vertices, textures. Also allows to place objects
@@ -36,7 +36,7 @@ History:        1.0 (6/19/2020):
                 - Randomizing objects now works on groups as well (uses bounding box center)
                 - Vertices now randomize correctly about their position
                 - New function: Randomly swap objects (components only)
-                1.2 (TBD)
+                1.2 (7/7/2020)
                 - Now saves dialog values
                 - Fixed issue with vertices double-counting
                 - Fixed issue with pre-2020 layer names
@@ -58,7 +58,7 @@ module AS_Extensions
 
   module AS_Randomtools
   
-    @extversion           = "1.1"
+    @extversion           = "1.2"
     @exttitle             = "Random Tools"
     @extname              = "as_randomtools"
     
