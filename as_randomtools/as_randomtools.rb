@@ -33,12 +33,12 @@ module AS_Extensions
             prompts = [ "MIN Extrusion (distance) " , "MAX Extrusion (distance) " , "Create New Faces " ]
             defaults = [ "0" , "1'" , "Yes" ]
             lists = [ "" , "" , "Yes|No" ]
-            defaults = Sketchup.read_default( @exttitle , toolname , defaults )
+            defaults = Sketchup.read_default( @extname , __method__.to_s , defaults )
             
             res = UI.inputbox( prompts , defaults , lists , toolname )
             return if !res
             
-            Sketchup.write_default( @exttitle , toolname , res )
+            Sketchup.write_default( @extname , __method__.to_s , res.map { |s| s.gsub( '"' , '' ) } )  # Fix for inch pref saving error
             
             mod.start_operation toolname
             
@@ -94,12 +94,12 @@ module AS_Extensions
             # Get all the parameters from input dialog
             prompts = [ "MAX Variation RED (x distance) " , "MAX Variation GREEN (y distance) " , "MAX Variation BLUE (z distance) " ]
             defaults = [ "1'" , "1'" , "1'" ]
-            defaults = Sketchup.read_default( @exttitle , toolname , defaults )
+            defaults = Sketchup.read_default( @extname , __method__.to_s , defaults )
             
             res = UI.inputbox( prompts , defaults , toolname )
             return if !res
             
-            Sketchup.write_default( @exttitle , toolname , res )
+            Sketchup.write_default( @extname , __method__.to_s , res.map { |s| s.gsub( '"' , '' ) } )  # Fix for inch pref saving error
             
             mod.start_operation toolname
             
@@ -171,12 +171,12 @@ module AS_Extensions
             prompts = [ "MAX Number of Copies per Face " , "MAX Rotation Variation (degrees) " , "Scale Variation Factor (0 = none) " , "Orientation " , "Place Copies on Tag/Layer " ]
             defaults = [ "10" , "360" , "0.5", "Normal" , lay[0] ]
             lists = [ "" , "" , "" , "Up|Normal" , lay.join("|") ]
-            defaults = Sketchup.read_default( @exttitle , toolname , defaults )
+            defaults = Sketchup.read_default( @extname , __method__.to_s , defaults )
             
             res = UI.inputbox( prompts , defaults , lists , toolname )
             return if !res
             
-            Sketchup.write_default( @exttitle , toolname , res )
+            Sketchup.write_default( @extname , __method__.to_s , res.map { |s| s.gsub( '"' , '' ) } )  # Fix for inch pref saving error
             
             mod.start_operation toolname
             
@@ -292,12 +292,12 @@ module AS_Extensions
             prompts = [ "MAX Number of Copies per Edge " , "MAX Rotation Variation (degrees) " , "Scale Variation Factor (0 = none) " , "Orientation " , "Place Copies on Tag/Layer " ]
             defaults = [ "2" , "360" , "0.5", "Normal" , lay[0] ]
             lists = [ "" , "" , "" , "Up|Normal" , lay.join("|") ]
-            defaults = Sketchup.read_default( @exttitle , toolname , defaults )
+            defaults = Sketchup.read_default( @extname , __method__.to_s , defaults )
             
             res = UI.inputbox( prompts , defaults , lists , toolname )
             return if !res
             
-            Sketchup.write_default( @exttitle , toolname , res )
+            Sketchup.write_default( @extname , __method__.to_s , res.map { |s| s.gsub( '"' , '' ) } )  # Fix for inch pref saving error
             
             mod.start_operation toolname
             
@@ -388,7 +388,121 @@ module AS_Extensions
         
         end
 
-    end  # random_place_edges    
+    end  # random_place_edges  
+    
+    
+    # ==================    
+    
+    
+    def self.random_place_vertices
+    # Randomly places components on vertices
+        
+        mod = Sketchup.active_model
+        ent = mod.entities
+        sel = mod.selection
+        toolname = "Place Components Randomly on Vertices"
+        
+        # Get all the components in our selection
+        comp = sel.grep( Sketchup::ComponentInstance )
+
+        # Get all the edges in our selection
+        all_edges = sel.grep( Sketchup::Edge )
+        
+        if !( all_edges.empty? or comp.empty? )
+        
+            # Get all the parameters from input dialog
+            lay = []
+            mod.layers.each { |l| 
+                lay << ( Sketchup.version.to_i < 20 ? l.name : l.display_name )
+            }
+            
+            prompts = [ "Placement Probability (%) " , "MAX Rotation Variation (degrees) " , "Scale Variation Factor (0 = none) " , "Orientation " , "Place Copies on Tag/Layer " ]
+            defaults = [ "50" , "360" , "0.5", "Normal" , lay[0] ]
+            lists = [ "10|25|50|75|100" , "" , "" , "Up|Normal" , lay.join("|") ]
+            defaults = Sketchup.read_default( @extname , __method__.to_s , defaults )
+            
+            res = UI.inputbox( prompts , defaults , lists , toolname )
+            return if !res
+            
+            Sketchup.write_default( @extname , __method__.to_s , res.map { |s| s.gsub( '"' , '' ) } )  # Fix for inch pref saving error
+            
+            mod.start_operation toolname
+            
+            begin
+            
+                # Get the first component's definition from our selection
+                comp = comp[0].definition
+            
+                # Get parameters from dialog
+                perc = res[0].to_i
+                max_rot = res[1].to_i
+                scale_var = res[2].to_f
+                
+                # Select layer/tag so that we can turn the created copies on/off
+                # Also add everything to a group to keep inspector manageable
+                clayer = mod.layers[ res[4].to_s ]
+                group = mod.entities.add_group
+                group.layer = clayer
+                
+                # Get all the unique vertices
+                vertices = []
+                all_edges.each { |e| vertices << e.vertices }
+                vertices.flatten!
+                vertices.uniq!
+
+                vertices.each_with_index { |v,i| 
+                
+                    pt = v.position
+                    norm = Geom::Vector3d.new(0,0,0)
+                    if v.faces.length > 0
+                        v.faces.each { |f| norm += f.normal }
+                    else
+                        norm = [0,0,1]
+                    end
+
+                    # Scale copies randomly          
+                    t_sca = Geom::Transformation.scaling pt, ( 1 - scale_var / 2 + rand * scale_var )
+
+                    if res[3] == "Up"
+
+                       # Use the following if things need to point up:
+                       t_loc = Geom::Transformation.new pt, [0,0,1]
+                       t_rot = Geom::Transformation.rotation pt, [0,0,1] , (rand * max_rot).degrees      
+
+                    else    
+
+                       # Use the following if you need to align things normal to face:
+                       t_loc = Geom::Transformation.new pt, norm
+                       t_rot = Geom::Transformation.rotation pt, norm, (rand * max_rot).degrees
+
+                    end
+
+                    # Now place the copy and move it to the new layer if random parameter allows
+                    if rand > ( 1 - ( perc.to_f / 100.0 ) )
+                       new = group.entities.add_instance comp, ( t_sca * t_rot * t_loc )
+                       new.layer = clayer
+                    end
+
+                    # Life is always better with some feedback while SketchUp works
+                    Sketchup.status_text = toolname + " | Done with vertex #{(i+1).to_s}"
+                
+                }
+              
+            rescue Exception => e    
+            
+                UI.messagebox("Couldn't do it! Error: #{e}")
+                
+            end
+            
+            mod.commit_operation
+            
+        else  # Can't start tool
+        
+            UI.messagebox "Select one component instance (a copy) and at least one ungrouped edge."
+        
+        end
+
+    end  # random_place_vertices  
     
     
     # ==================
@@ -410,12 +524,12 @@ module AS_Extensions
         
             prompts = [ "MAX Rotation Variation (degrees) " , "MAX Position Variation (distance) " , "Scale Variation Factor (0 = none) " ]
             defaults = [ "360" , "0" , "0.5" ]
-            defaults = Sketchup.read_default( @exttitle , toolname , defaults )
+            defaults = Sketchup.read_default( @extname , __method__.to_s , defaults )
             
             res = UI.inputbox( prompts , defaults , toolname )
             return if !res
             
-            Sketchup.write_default( @exttitle , toolname , res )      
+            Sketchup.write_default( @extname , __method__.to_s , res.map { |s| s.gsub( '"' , '' ) } )  # Fix for inch pref saving error  
             
             mod.start_operation toolname
             
@@ -628,6 +742,7 @@ module AS_Extensions
         tools << [ "" , "" , "" ]
         tools << [ "Place Components Randomly on Faces" , "random_place_faces" , "Select one component instance (a copy) and at least one ungrouped face." ]
         tools << [ "Place Components Randomly on Edges" , "random_place_edges" , "Select one component instance (a copy) and at least one ungrouped edge." ]
+        tools << [ "Place Components Randomly on Vertices" , "random_place_vertices" , "Select one component instance (a copy) and at least one ungrouped edge." ]
         tools << [ "" , "" , "" ]
         tools << [ "Randomize Objects (Scale, Rotation, Position)" , "randomize_objects" , "Select at least one group or component instance (i.e. objects in your model)." ]
         tools << [ "Randomly Swap Objects" , "randomize_swap" , "Select at least one component instance (i.e. objects in your model)." ]
