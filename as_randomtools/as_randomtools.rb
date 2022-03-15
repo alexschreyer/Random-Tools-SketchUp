@@ -640,6 +640,70 @@ module AS_Extensions
     # ==================
     
     
+    def self.random_delete
+    # Randomly delete objects
+        
+        mod = Sketchup.active_model
+        sel = mod.selection
+        toolname = "Randomly Erase Objects"
+        
+        # Get all objects from selection
+        all_objects = []
+        all_objects.push( *sel.grep( Sketchup::ComponentInstance ) )
+        all_objects.push( *sel.grep( Sketchup::Group ) )
+        
+        if !all_objects.empty?    
+        
+            prompts = [ "Deletion Probability (%) " ]
+            defaults = [ "50" ]
+            lists = [ "10|25|50|75|90" ]
+            defaults = Sketchup.read_default( @extname , __method__.to_s , defaults )
+            
+            res = UI.inputbox( prompts , defaults , lists , toolname )
+            return if !res
+            
+            Sketchup.write_default( @extname , __method__.to_s , res.map { |s| s.gsub( '"' , '' ) } )  # Fix for inch pref saving error        
+            
+            mod.start_operation toolname
+            
+            begin
+            
+                # Get parameters from dialog
+                perc = res[0].to_i
+                
+                # Get all entities that need to get erased
+                to_erase = []
+                all_objects.each { |e| 
+                    if rand > ( 1 - ( perc.to_f / 100.0 ) )
+                        to_erase.push( e )
+                    end
+                }
+                
+                mod.entities.erase_entities( to_erase )
+
+                # Life is always better with some feedback while SketchUp works
+                Sketchup.status_text = toolname + " | Done erasing entities"
+                
+            rescue Exception => e    
+            
+                UI.messagebox("Couldn't do it! Error: #{e}")
+                
+            end
+            
+            mod.commit_operation
+            
+        else  # Can't start tool
+        
+            UI.messagebox "Select at least one group or component instance (i.e. objects in your model)."
+        
+        end
+
+    end  # random_delete       
+    
+    
+    # ==================    
+    
+    
     def self.random_texture_placement
     # Randomly positions existing textures on selected faces
         
@@ -746,6 +810,7 @@ module AS_Extensions
         tools << [ "" , "" , "" ]
         tools << [ "Randomize Objects (Scale, Rotation, Position)" , "randomize_objects" , "Select at least one group or component instance (i.e. objects in your model)." ]
         tools << [ "Randomly Swap Objects" , "randomize_swap" , "Select at least one component instance (i.e. objects in your model)." ]
+        tools << [ "Randomly Erase Objects" , "random_delete" , "Select at least one group or component instance (i.e. objects in your model)." ]        
         tools << [ "" , "" , "" ]
         tools << [ "Randomize Texture Positions" , "random_texture_placement" , "Select at least one face or group that has an image texture applied directly to its face(s). Note: This tool will make all copies of groups unique." ]
 

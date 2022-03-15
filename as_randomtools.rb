@@ -1,6 +1,6 @@
 =begin
 
-Copyright 2020-2020, Alexander C. Schreyer
+Copyright 2020-2022, Alexander C. Schreyer
 All rights reserved
 
 THIS SOFTWARE IS PROVIDED "AS IS" AND WITHOUT ANY EXPRESS OR IMPLIED WARRANTIES,
@@ -15,13 +15,13 @@ Website:        https://alexschreyer.net/projects/random-tools-extension-for-ske
 
 Name :          Random Tools
 
-Version:        1.2.1
+Version:        1.3
 
-Date :          7/12/2020
+Date :          3/14/2022
 
 Description :   A set of tools to randomize various things in a SketchUp Model: Object placement,
                 rotation, scale, face extrusion, vertices, textures. Also allows to place objects
-                randomly on faces, edges or vertices and to swap components.
+                randomly on faces, edges or vertices and to swap or delete components.
                 
                 This extension combines several of my random scripts from my book and sketchupfordesign.com.
 
@@ -43,6 +43,8 @@ History:        1.0 (6/19/2020):
                 1.2.1 (7/12/2020)
                 - Fixed inch-saving bug in preferences
                 - New function: Place on vertices
+                1.3 (3/14/2022)
+                - Added random delete tool
 
 =end
 
@@ -61,7 +63,7 @@ module AS_Extensions
 
   module AS_Randomtools
   
-    @extversion           = "1.2.1"
+    @extversion           = "1.3"
     @exttitle             = "Random Tools"
     @extname              = "as_randomtools"
     
@@ -74,7 +76,7 @@ module AS_Extensions
     extension.copyright   = "Copyright 2020-#{Time.now.year} Alexander C. Schreyer"
     extension.creator     = "Alexander C. Schreyer, www.alexschreyer.net"
     extension.version     = @extversion
-    extension.description = "A set of tools to randomize various things in a SketchUp Model: Object placement, rotation, scale, face extrusion, vertices, textures. Also allows to place objects randomly on faces, edges or vertices and to swap components."
+    extension.description = "A set of tools to randomize various things in a SketchUp Model: Object placement, rotation, scale, face extrusion, vertices, textures. Also allows to place objects randomly on faces, edges or vertices and to swap or delete components."
     
     Sketchup.register_extension( extension , true )
          
