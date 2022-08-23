@@ -185,10 +185,17 @@ module AS_Extensions
                 # Get the first component's definition from our selection
                 comp = comp[0].definition
             
-                # Get parameters from dialog
-                num = res[0].to_i
+                # Get parameters from dialog and adjust for partial placement
+                num = res[0].to_f
+                perc = 100.0
+                if num < 1.0
+                    perc = num * 100.0
+                    num = 1
+                else    
+                    num = num.to_i
+                end   
                 max_rot = res[1].to_i
-                scale_var = res[2].to_f
+                scale_var = res[2].to_f           
                 
                 # Select a new layer/tag so that we can turn the created copies on/off
                 # Also add everything to a group to keep inspector manageable
@@ -233,9 +240,11 @@ module AS_Extensions
                                
                            end
 
-                           # Now place the copy and move it to the new layer
-                           new = group.entities.add_instance comp, ( t_sca * t_rot * t_loc )
-                           new.layer = clayer
+                           # Now place the copy and move it to the new layer if random parameter allows
+                           if rand > ( 1 - ( perc.to_f / 100.0 ) )
+                               new = group.entities.add_instance comp, ( t_sca * t_rot * t_loc )
+                               new.layer = clayer
+                           end
 
                            # Life is always better with some feedback while SketchUp works
                            Sketchup.status_text = toolname + " | Done with face #{(i+1).to_s}"
@@ -306,8 +315,15 @@ module AS_Extensions
                 # Get the first component's definition from our selection
                 comp = comp[0].definition
             
-                # Get parameters from dialog
-                num = res[0].to_i
+                # Get parameters from dialog and adjust for partial placement
+                num = res[0].to_f
+                perc = 100.0
+                if num < 1.0
+                    perc = num * 100.0
+                    num = 1
+                else    
+                    num = num.to_i
+                end              
                 max_rot = res[1].to_i
                 scale_var = res[2].to_f
                 
@@ -330,7 +346,7 @@ module AS_Extensions
                         norm = [0,0,1]
                     end
 
-                    # Place copies on each face
+                    # Place copies on each edge
                     num.times {
 
                         # Get a random point on the line - based on bounding box
@@ -360,9 +376,11 @@ module AS_Extensions
                                
                            end
 
-                           # Now place the copy and move it to the new layer
-                           new = group.entities.add_instance comp, ( t_sca * t_rot * t_loc )
-                           new.layer = clayer
+                           # Now place the copy and move it to the new layer if random parameter allows
+                           if rand > ( 1 - ( perc.to_f / 100.0 ) )
+                               new = group.entities.add_instance comp, ( t_sca * t_rot * t_loc )
+                               new.layer = clayer
+                           end
 
                            # Life is always better with some feedback while SketchUp works
                            Sketchup.status_text = toolname + " | Done with edge #{(i+1).to_s}"

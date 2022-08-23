@@ -47,6 +47,7 @@ History:        1.0 (6/19/2020):
                 - Added random delete tool
                 1.4 (TBD)
                 - Fixed positioning and rotation (was only positive)
+                - Now allows for fractional placement for faces and edges
 
 =end
 
@@ -65,7 +66,7 @@ module AS_Extensions
 
   module AS_Randomtools
   
-    @extversion           = "1.3"
+    @extversion           = "1.4"
     @exttitle             = "Random Tools"
     @extname              = "as_randomtools"
     
