@@ -15,9 +15,9 @@ Website:        https://alexschreyer.net/projects/random-tools-extension-for-ske
 
 Name :          Random Tools
 
-Version:        1.3
+Version:        1.4
 
-Date :          3/14/2022
+Date :          TBD
 
 Description :   A set of tools to randomize various things in a SketchUp Model: Object placement,
                 rotation, scale, face extrusion, vertices, textures. Also allows to place objects
@@ -45,6 +45,8 @@ History:        1.0 (6/19/2020):
                 - New function: Place on vertices
                 1.3 (3/14/2022)
                 - Added random delete tool
+                1.4 (TBD)
+                - Fixed positioning and rotation (was only positive)
 
 =end
 

@@ -223,13 +223,13 @@ module AS_Extensions
                            
                                # Use the following if things need to point up:
                                t_loc = Geom::Transformation.new plpt, [0,0,1]
-                               t_rot = Geom::Transformation.rotation plpt, [0,0,1] , (rand * max_rot).degrees      
+                               t_rot = Geom::Transformation.rotation plpt, [0,0,1] , (max_rot - rand * 2 * max_rot).degrees      
                                
                            else    
 
                                # Use the following if you need to align things normal to face:
                                t_loc = Geom::Transformation.new plpt, norm
-                               t_rot = Geom::Transformation.rotation plpt, norm, (rand * max_rot).degrees
+                               t_rot = Geom::Transformation.rotation plpt, norm, (max_rot - rand * 2 * max_rot).degrees
                                
                            end
 
@@ -350,13 +350,13 @@ module AS_Extensions
                            
                                # Use the following if things need to point up:
                                t_loc = Geom::Transformation.new plpt, [0,0,1]
-                               t_rot = Geom::Transformation.rotation plpt, [0,0,1] , (rand * max_rot).degrees      
+                               t_rot = Geom::Transformation.rotation plpt, [0,0,1] , (max_rot - rand * 2 * max_rot).degrees      
                                
                            else    
 
                                # Use the following if you need to align things normal to face:
                                t_loc = Geom::Transformation.new plpt, norm
-                               t_rot = Geom::Transformation.rotation plpt, norm, (rand * max_rot).degrees
+                               t_rot = Geom::Transformation.rotation plpt, norm, (max_rot - rand * 2 * max_rot).degrees
                                
                            end
 
@@ -467,13 +467,13 @@ module AS_Extensions
 
                        # Use the following if things need to point up:
                        t_loc = Geom::Transformation.new pt, [0,0,1]
-                       t_rot = Geom::Transformation.rotation pt, [0,0,1] , (rand * max_rot).degrees      
+                       t_rot = Geom::Transformation.rotation pt, [0,0,1] , (max_rot - rand * 2 * max_rot).degrees      
 
                     else    
 
                        # Use the following if you need to align things normal to face:
                        t_loc = Geom::Transformation.new pt, norm
-                       t_rot = Geom::Transformation.rotation pt, norm, (rand * max_rot).degrees
+                       t_rot = Geom::Transformation.rotation pt, norm, (max_rot - rand * 2 * max_rot).degrees
 
                     end
 
@@ -550,9 +550,9 @@ module AS_Extensions
                     end
 
                     # Transform this object
-                    t_rot = Geom::Transformation.rotation cen , e.transformation.zaxis , ( rand * max_rot ).degrees
+                    t_rot = Geom::Transformation.rotation cen , e.transformation.zaxis , ( max_rot - rand * 2 * max_rot ).degrees
                     t_sca = Geom::Transformation.scaling cen , ( 1 - scale_var / 2 + rand * scale_var )
-                    t_pos = Geom::Transformation.translation Geom::Vector3d.linear_combination( rand * pos_var , e.transformation.xaxis , rand * pos_var , e.transformation.yaxis )
+                    t_pos = Geom::Transformation.translation Geom::Vector3d.linear_combination( pos_var - rand * 2 * pos_var , e.transformation.xaxis , pos_var - rand * 2 * pos_var , e.transformation.yaxis )
 
                     # Combine transformations and apply
                     e.transform! ( t_rot * t_sca * t_pos )
