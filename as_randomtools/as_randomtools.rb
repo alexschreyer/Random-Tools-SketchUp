@@ -168,7 +168,7 @@ module AS_Extensions
                 lay << ( Sketchup.version.to_i < 20 ? l.name : l.display_name )
             }
             
-            prompts = [ "MAX Number of Copies per Face " , "MAX Rotation Variation (degrees) " , "Scale Variation Factor (0 = none) " , "Orientation " , "Place Copies on Tag/Layer " ]
+            prompts = [ "MAX Number of Copies per Face (<1 for Probability) " , "MAX Rotation Variation (+/- degrees) " , "Scale Variation Factor (0 = none) " , "Orientation " , "Place Copies on Tag/Layer " ]
             defaults = [ "10" , "360" , "0.5", "Normal" , lay[0] ]
             lists = [ "" , "" , "" , "Up|Normal" , lay.join("|") ]
             defaults = Sketchup.read_default( @extname , __method__.to_s , defaults )
@@ -298,7 +298,7 @@ module AS_Extensions
                 lay << ( Sketchup.version.to_i < 20 ? l.name : l.display_name )
             }
             
-            prompts = [ "MAX Number of Copies per Edge " , "MAX Rotation Variation (degrees) " , "Scale Variation Factor (0 = none) " , "Orientation " , "Place Copies on Tag/Layer " ]
+            prompts = [ "MAX Number of Copies per Edge (<1 for Probability) " , "MAX Rotation Variation (+/- degrees) " , "Scale Variation Factor (0 = none) " , "Orientation " , "Place Copies on Tag/Layer " ]
             defaults = [ "2" , "360" , "0.5", "Normal" , lay[0] ]
             lists = [ "" , "" , "" , "Up|Normal" , lay.join("|") ]
             defaults = Sketchup.read_default( @extname , __method__.to_s , defaults )
@@ -434,7 +434,7 @@ module AS_Extensions
                 lay << ( Sketchup.version.to_i < 20 ? l.name : l.display_name )
             }
             
-            prompts = [ "Placement Probability (%) " , "MAX Rotation Variation (degrees) " , "Scale Variation Factor (0 = none) " , "Orientation " , "Place Copies on Tag/Layer " ]
+            prompts = [ "Placement Probability (%) " , "MAX Rotation Variation (+/- degrees) " , "Scale Variation Factor (0 = none) " , "Orientation " , "Place Copies on Tag/Layer " ]
             defaults = [ "50" , "360" , "0.5", "Normal" , lay[0] ]
             lists = [ "10|25|50|75|100" , "" , "" , "Up|Normal" , lay.join("|") ]
             defaults = Sketchup.read_default( @extname , __method__.to_s , defaults )
@@ -540,7 +540,7 @@ module AS_Extensions
         
         if !all_objects.empty?
         
-            prompts = [ "MAX Rotation Variation (degrees) " , "MAX Position Variation (distance) " , "Scale Variation Factor (0 = none) " ]
+            prompts = [ "MAX Rotation Variation (+/- degrees) " , "MAX Position Variation (+/- distance) " , "Scale Variation Factor (0 = none) " ]
             defaults = [ "360" , "0" , "0.5" ]
             defaults = Sketchup.read_default( @extname , __method__.to_s , defaults )
             
