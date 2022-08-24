@@ -697,7 +697,7 @@ module AS_Extensions
                     end
                 }
                 
-                mod.entities.erase_entities( to_erase )
+                mod.active_entities.erase_entities( to_erase )
 
                 # Life is always better with some feedback while SketchUp works
                 Sketchup.status_text = toolname + " | Done erasing entities"
