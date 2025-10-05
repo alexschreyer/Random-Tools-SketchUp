@@ -1,13 +1,13 @@
 =begin
 
-Copyright 2020-2022, Alexander C. Schreyer
+Copyright 2020-2025, Alexander C. Schreyer
 All rights reserved
 
-THIS SOFTWARE IS PROVIDED "AS IS" AND WITHOUT ANY EXPRESS OR IMPLIED WARRANTIES,
-INCLUDING, WITHOUT LIMITATION, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND
-FITNESS FOR A PARTICULAR PURPOSE.
+THIS SOFTWARE IS PROVIDED 'AS IS' AND WITHOUT ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, WITHOUT LIMITATION, THE IMPLIED WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHOR OR ANY COPYRIGHT HOLDER BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY ARISING FROM, OUT OF OR IN CONNECTION WITH THIS SOFTWARE OR THE USE OR OTHER DEALINGS IN THIS SOFTWARE.
 
-License:        GPL (http://www.gnu.org/licenses/gpl.html)
+WHERE APPLICABLE, THIRD-PARTY MATERIALS AND THIRD-PARTY PLATFORMS ARE PROVIDED 'AS IS' AND THE USER OF THIS SOFTWARE ASSUMES ALL RISK AND LIABILITY REGARDING ANY USE OF (OR RESULTS OBTAINED THROUGH) THIRD-PARTY MATERIALS OR THIRD-PARTY PLATFORMS.
+
+License:        GPL (https://www.gnu.org/licenses/gpl-3.0.html)
 
 Author :        Alexander Schreyer, www.alexschreyer.net, mail@alexschreyer.net
 
@@ -15,9 +15,9 @@ Website:        https://alexschreyer.net/projects/random-tools-extension-for-ske
 
 Name :          Random Tools
 
-Version:        1.4
+Version:        1.5
 
-Date :          8/23/2022
+Date :          10/04/2025
 
 Description :   A set of tools to randomize various things in a SketchUp Model: Object placement,
                 rotation, scale, face extrusion, vertices, textures. Also allows to place objects
@@ -49,6 +49,8 @@ History:        1.0 (6/19/2020):
                 - Fixed positioning and rotation (was only positive, now +/-)
                 - Fixed random erase within groups
                 - Now allows for fractional (probability) placement for faces and edges
+                1.5 (10/04/2025)
+                - Fixed vertices within groups crash
 
 =end
 
@@ -67,7 +69,7 @@ module AS_Extensions
 
   module AS_Randomtools
   
-    @extversion           = "1.4"
+    @extversion           = "1.5"
     @exttitle             = "Random Tools"
     @extname              = "as_randomtools"
     
