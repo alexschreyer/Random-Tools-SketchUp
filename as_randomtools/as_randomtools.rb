@@ -83,7 +83,7 @@ module AS_Extensions
     # Randomly positions vertices for all selected faces
         
         mod = Sketchup.active_model
-        ent = mod.entities
+        ent = mod.active_entities  # Need active_entities if within component
         toolname = "Random Vertex Positions"
         
         # Get all selected edges
